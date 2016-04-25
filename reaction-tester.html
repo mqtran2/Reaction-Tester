@@ -1,0 +1,252 @@
+<html class="gr__completewebdevelopercourse_com"><head>
+        
+        <title>Reaction Tester</title>
+    
+    </head>
+	<style>
+	#floatingShape{
+	
+	position: relative;
+	width: 100px;
+	height: 100px;
+	
+	top: 100px;
+	left: 300px;
+	
+	
+	background-color: red;
+	
+	
+	
+	}
+	
+	#instructions {
+	margin-top: 20px;
+	margin-left: 20px;
+	
+	font-size: 30px;
+	
+	
+	}
+	
+	#clear {
+	
+	height: 50px;
+	width: 200px;
+	font-size: 30px;
+	float: right;
+	margin-bottom: 10px;
+	
+	
+	}
+	
+	
+	
+
+	
+	
+	
+	</style>
+    <body>
+		<div id = "instructions"> 
+		
+			<h1>Click on the shapes as fast as you can!</h1>
+			<button id="clear">Refresh</button>
+			
+			
+			<p>It took you <span id="lastTime">0</span> seconds to hit the last shape. <br />
+			Your fastest time is <span id="fastestTime">0</span> seconds. <br />
+			Your average time is <span id="averageTime">0</span> seconds. </p>
+			
+		
+		</div>
+		
+		
+		
+        <div id="floatingShape">
+		
+		</div>
+        
+        <script type="text/javascript">
+		
+		// Random color;
+		colorList = ['aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'orange', 'purple', 'red', 'silver', 'teal', 'yellow'];
+		
+		var geometry = 1;
+		var colorCode = 0;
+		var width = 0;
+		var height = 0;
+		var top = 0;
+		var left = 0;
+		
+		var tElapsed = 0;
+		var tMin = 0;
+		var tAvg = 0;
+		var tTotal = 0;
+		var numClick = 0;
+		
+		var clicked = 0;
+		var myVar = 0;
+		
+		//Generate random integers
+		function getRandomInt(min, max,i) {
+		
+			 i= (Math.floor(Math.random() * (max - min)) + min);
+			  return(i)	
+		}
+		
+		//Shape functions
+		function randomSquare() {
+		
+			floatingShape.style.backgroundColor = colorList[getRandomInt(0,10,colorCode)];	
+			floatingShape.style.width = getRandomInt(100,150,width);
+			floatingShape.style.height = floatingShape.style.width;
+			floatingShape.style.top = getRandomInt(200,350,top);
+			floatingShape.style.left = getRandomInt(200,1200,left);
+			floatingShape.style.borderRadius='0%'
+		
+		 
+		
+		}
+		
+		function randomCircle() {
+		
+			floatingShape.style.backgroundColor = colorList[getRandomInt(0,10,colorCode)];	
+			floatingShape.style.width = getRandomInt(100,150,width);
+			
+			floatingShape.style.height = floatingShape.style.width;
+			floatingShape.style.top = getRandomInt(200,350,top);
+			floatingShape.style.left = getRandomInt(200,1200,left);
+			floatingShape.style.borderRadius='50%'
+		
+		 
+		
+		}
+		
+		function randomTriangle() {
+		
+			floatingShape.style.backgroundColor = "white";
+			floatingShape.style.width =0;
+			floatingShape.style.height =0;
+			floatingShape.style.borderLeftStyle= " solid";
+			floatingShape.style.borderLeftColor = "transparent";
+			floatingShape.style.borderLeftWidth = getRandomInt(75,100,width);
+			
+			floatingShape.style.borderRightStyle= " solid";
+			floatingShape.style.borderRightColor = "transparent";
+			floatingShape.style.borderRightWidth = floatingShape.style.borderLeftWidth;
+			
+			floatingShape.style.borderBottomStyle= " solid";
+			floatingShape.style.borderBottomColor = colorList[getRandomInt(0,17,colorCode)];
+			floatingShape.style.borderBottomWidth = 2*parseInt(floatingShape.style.borderLeftWidth,10);
+				
+			floatingShape.style.top = getRandomInt(200,350,top);
+			floatingShape.style.left = getRandomInt(200,1200,left);
+		
+		}
+		
+		//Remove special effect from shapes
+		function undoShape() {
+		
+			floatingShape.style.border = 'none';
+			floatingShape.style.borderRadius = '0%';
+			
+		}
+		
+		
+		function randomizeGeometry () {
+		geometry = getRandomInt(1, 4,geometry);
+			undoShape();
+			
+			if (geometry==1) {
+			
+				randomSquare();
+			
+			} else if (geometry==2) {
+				randomCircle();
+			} else if (geometry==3) {
+				randomTriangle();
+			}
+		
+		
+		
+		}
+		
+		//Update statistics
+		function report () {
+			document.getElementById("lastTime").innerHTML=(tElapsed/1000).toFixed(3);
+			document.getElementById("fastestTime").innerHTML=(tMin/1000).toFixed(3);
+			document.getElementById("averageTime").innerHTML=(tAvg/1000).toFixed(3);
+				
+		}
+		//Clear statistics
+		function refresh () {
+		
+			 tElapsed = 0;
+			 tMin = 0;
+			 tAvg = 0;
+			 tTotal = 0;
+			 numClick = 0;
+		
+		}
+		
+		
+		// Auto click shapes
+		function autoClick () {
+		
+		
+		document.getElementById("floatingShape").click();
+		
+		}
+		
+		// initiate timer
+		var tStart = performance.now();
+		
+		document.getElementById("floatingShape").onclick= function(){
+			var tEnd = performance.now() ;
+			// Calculate time
+			tElapsed = (tEnd - tStart);
+		
+		
+			numClick++;
+			if (tElapsed < tMin || tMin ==0 ) {
+					tMin = tElapsed;
+			
+			}
+			
+			tTotal = tTotal + tElapsed;
+			tAvg =  tTotal/numClick;
+			
+			report();
+			
+			
+			randomizeGeometry();
+			//initiate timer for next shape
+			tStart = performance.now();
+			}
+			  
+		
+		
+		 document.getElementById("clear").onclick= function(){
+		 
+			refresh();
+			report();
+		 
+		 }
+		 
+		 
+			
+			
+			
+			
+		 
+		 
+		
+		
+		
+			
+        </script>
+        
+    
+
+</body></html>
